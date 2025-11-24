@@ -1,5 +1,7 @@
 # Using Hugging Face skills with Claude Code
 
+⚠️ First draft: Loads of generated content. Scripts are tested and working, but the documentation is rough.
+
 ## Quests
 
 - Week 1 - [Evaluate a Hub model](quests/evaluate-hub-model.md)
