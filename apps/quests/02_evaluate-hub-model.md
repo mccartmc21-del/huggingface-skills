@@ -77,7 +77,7 @@ HF_TOKEN=$HF_TOKEN hf jobs uv run hf_model_evaluation/scripts/inspect_eval_uv.py
 
 ## Resources
 
-- [SKILL.md](../hf_model_evaluation/SKILL.md) — Full skill documentation
-- [Example Usage](../hf_model_evaluation/examples/USAGE_EXAMPLES.md) — Worked examples
-- [Metric Mapping](../hf_model_evaluation/examples/metric_mapping.json) — Standard metric types
+- [SKILL.md](../../hf_model_evaluation/SKILL.md) — Full skill documentation
+- [Example Usage](../../hf_model_evaluation/examples/USAGE_EXAMPLES.md) — Worked examples
+- [Metric Mapping](../../hf_model_evaluation/examples/metric_mapping.json) — Standard metric types
 

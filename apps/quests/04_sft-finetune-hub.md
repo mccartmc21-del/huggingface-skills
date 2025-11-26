@@ -25,13 +25,9 @@ We'll announce the XP tiers for this quest soon.
 
 ## Resources
 
-- [SKILL.md](../hf-llm-trainer/SKILL.md) — Full skill documentation
-- [SFT Example](../hf-llm-trainer/scripts/train_sft_example.py) — Production SFT template
-- [DPO Example](../hf-llm-trainer/scripts/train_dpo_example.py) — Production DPO template
-- [GRPO Example](../hf-llm-trainer/scripts/train_grpo_example.py) — Production GRPO template
-- [Training Methods](../hf-llm-trainer/references/training_methods.md) — Method selection guide
-- [Hardware Guide](../hf-llm-trainer/references/hardware_guide.md) — GPU selection
-
----
-
-**All quests complete?** Head back to [01_start.md](01_start.md) for the full schedule and leaderboard info.
+- [SKILL.md](../../hf-llm-trainer/SKILL.md) — Full skill documentation
+- [SFT Example](../../hf-llm-trainer/scripts/train_sft_example.py) — Production SFT template
+- [DPO Example](../../hf-llm-trainer/scripts/train_dpo_example.py) — Production DPO template
+- [GRPO Example](../../hf-llm-trainer/scripts/train_grpo_example.py) — Production GRPO template
+- [Training Methods](../../hf-llm-trainer/references/training_methods.md) — Method selection guide
+- [Hardware Guide](../../hf-llm-trainer/references/hardware_guide.md) — GPU selection

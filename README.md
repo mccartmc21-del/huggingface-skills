@@ -17,11 +17,11 @@ Skills are self-contained folders that package instructions, scripts, and resour
 
 | Week | Quest | Skill |
 |------|-------|-------|
-| 1 | [Evaluate a Hub Model](quests/02_evaluate-hub-model.md) | `hf_model_evaluation/` |
-| 2 | [Publish a Hub Dataset](quests/03_publish-hub-dataset.md) | `hf_dataset_creator/` |
-| 3 | [Supervised Fine-Tuning](quests/04_sft-finetune-hub.md) | `hf-llm-trainer/` |
+| 1 | [Evaluate a Hub Model](apps/quests/02_evaluate-hub-model.md) | `hf_model_evaluation/` |
+| 2 | [Publish a Hub Dataset](apps/quests/03_publish-hub-dataset.md) | `hf_dataset_creator/` |
+| 3 | [Supervised Fine-Tuning](apps/quests/04_sft-finetune-hub.md) | `hf-llm-trainer/` |
 
-**Get started:** [Join the hackathon org](https://huggingface.co/organizations/hf-skills/share/KrqrmBxkETjvevFbfkXeezcyMbgMjjMaOp) → Read [quests/01_start.md](quests/01_start.md) → Pick a quest
+**Get started:** [Join the hackathon org](https://huggingface.co/organizations/hf-skills/share/KrqrmBxkETjvevFbfkXeezcyMbgMjjMaOp) → Read [apps/quests/01_start.md](apps/quests/01_start.md) → Pick a quest
 
 ---
 

@@ -65,9 +65,9 @@ python hf_dataset_creator/scripts/dataset_manager.py add_rows \
 
 ## Resources
 
-- [SKILL.md](../hf_dataset_creator/SKILL.md) — Full skill documentation
-- [Templates](../hf_dataset_creator/templates/) — JSON templates for each format
-- [Examples](../hf_dataset_creator/examples/) — Sample data and system prompts
+- [SKILL.md](../../hf_dataset_creator/SKILL.md) — Full skill documentation
+- [Templates](../../hf_dataset_creator/templates/) — JSON templates for each format
+- [Examples](../../hf_dataset_creator/examples/) — Sample data and system prompts
 
 ---
 
