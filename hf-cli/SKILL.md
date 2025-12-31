@@ -18,8 +18,9 @@ The `hf` CLI provides direct terminal access to the Hugging Face Hub for downloa
 | Create repo | `hf repo create <name>` |
 | Create tag | `hf repo tag create <repo_id> <tag>` |
 | Delete files | `hf repo-files delete <repo_id> <files>` |
-| Scan cache | `hf cache scan` |
-| Delete from cache | `hf cache delete` |
+| List cache | `hf cache ls` |
+| Remove from cache | `hf cache rm <repo_or_revision>` |
+| List endpoints | `hf endpoints ls` |
 | Run GPU job | `hf jobs run --flavor a10g-small <image> <cmd>` |
 | Environment info | `hf env` |
 
@@ -61,6 +62,12 @@ hf repo create <name>                              # Create model repo
 hf repo create <name> --repo-type dataset          # Create dataset
 hf repo create <name> --private                    # Private repo
 hf repo create <name> --repo-type space --space_sdk gradio  # Gradio space
+hf repo delete <repo_id>                           # Delete repo
+hf repo move <from_id> <to_id>                     # Move repo to new namespace
+hf repo settings <repo_id> --private true          # Update repo settings
+hf repo list --repo-type model                     # List repos
+hf repo branch create <repo_id> release-v1         # Create branch
+hf repo branch delete <repo_id> release-v1         # Delete branch
 hf repo tag create <repo_id> v1.0                  # Create tag
 hf repo tag list <repo_id>                         # List tags
 hf repo tag delete <repo_id> v1.0                  # Delete tag
@@ -74,10 +81,12 @@ hf repo-files delete <repo_id> "*.txt"             # Delete with pattern
 
 ### Cache Management
 ```bash
-hf cache scan                    # Scan cached repos (shows size, refs)
-hf cache scan --verbose          # Detailed view
-hf cache delete                  # Interactive TUI to delete revisions
-hf cache delete --disable-tui    # Non-interactive mode
+hf cache ls                      # List cached repos
+hf cache ls --revisions          # Include individual revisions
+hf cache rm model/gpt2           # Remove cached repo
+hf cache rm <revision_hash>      # Remove cached revision
+hf cache prune                   # Remove detached revisions
+hf cache verify gpt2             # Verify checksums from cache
 ```
 
 ### Jobs (Cloud Compute)
@@ -90,6 +99,23 @@ hf jobs logs <job_id>                              # View logs
 hf jobs cancel <job_id>                            # Cancel job
 ```
 
+### Inference Endpoints
+```bash
+hf endpoints ls                                     # List endpoints
+hf endpoints deploy my-endpoint \
+  --repo openai/gpt-oss-120b \
+  --framework vllm \
+  --accelerator gpu \
+  --instance-size x4 \
+  --instance-type nvidia-a10g \
+  --region us-east-1 \
+  --vendor aws
+hf endpoints describe my-endpoint                   # Show endpoint details
+hf endpoints pause my-endpoint                      # Pause endpoint
+hf endpoints resume my-endpoint                     # Resume endpoint
+hf endpoints scale-to-zero my-endpoint              # Scale to zero
+hf endpoints delete my-endpoint --yes               # Delete endpoint
+```
 **GPU Flavors:** `cpu-basic`, `cpu-upgrade`, `cpu-xl`, `t4-small`, `t4-medium`, `l4x1`, `l4x4`, `l40sx1`, `l40sx4`, `l40sx8`, `a10g-small`, `a10g-large`, `a10g-largex2`, `a10g-largex4`, `a100-large`, `h100`, `h100x8`
 
 ## Common Patterns
@@ -118,8 +144,8 @@ hf upload my-username/my-space . . --repo-type space \
 
 ### Check Cache Usage
 ```bash
-hf cache scan                    # See all cached repos and sizes
-hf cache delete                  # Interactive cleanup
+hf cache ls                      # See all cached repos and sizes
+hf cache rm model/gpt2           # Remove a repo from cache
 ```
 
 ## Key Options

@@ -6,6 +6,7 @@ Practical examples for common Hugging Face Hub tasks.
 - [Model Workflows](#model-workflows)
 - [Dataset Workflows](#dataset-workflows)
 - [Space Workflows](#space-workflows)
+- [Inference Endpoints](#inference-endpoints)
 - [Cache Management](#cache-management)
 - [Automation Patterns](#automation-patterns)
 
@@ -136,29 +137,65 @@ hf upload my-username/my-app . . --repo-type space \
 
 ---
 
+## Inference Endpoints
+
+### List Endpoints
+
+```bash
+hf endpoints ls
+hf endpoints ls --namespace my-org
+```
+
+### Deploy an Endpoint
+
+```bash
+hf endpoints deploy my-endpoint \
+  --repo openai/gpt-oss-120b \
+  --framework vllm \
+  --accelerator gpu \
+  --instance-size x4 \
+  --instance-type nvidia-a10g \
+  --region us-east-1 \
+  --vendor aws
+```
+
+### Operate an Endpoint
+
+```bash
+hf endpoints describe my-endpoint
+hf endpoints pause my-endpoint
+hf endpoints resume my-endpoint
+hf endpoints scale-to-zero my-endpoint
+```
+
+---
+
 ## Cache Management
 
 ### Inspect Cache Usage
 
 ```bash
 # Overview of all cached repos
-hf cache scan
+hf cache ls
 
-# Detailed view with file info
-hf cache scan --verbose
+# Include revisions
+hf cache ls --revisions
 
 # Custom cache location
-hf cache scan --dir /path/to/custom/cache
+hf cache ls --cache-dir /path/to/custom/cache
 ```
 
 ### Clean Up Disk Space
 
 ```bash
-# Interactive deletion (TUI)
-hf cache delete
+# Remove a specific repo from cache
+hf cache rm model/gpt2
+
+# Remove detached revisions
+hf cache prune
 
 # Non-interactive mode (for scripts)
-hf cache delete --disable-tui
+hf cache rm model/gpt2 --yes
 ```
 
 ---
@@ -272,7 +309,7 @@ hf jobs scheduled ps
 | Create space | `hf repo create <name> --repo-type space --space_sdk gradio` |
 | Tag a release | `hf repo tag create <repo_id> v1.0` |
 | Delete files | `hf repo-files delete <repo_id> <files>` |
-| Check cache | `hf cache scan` |
-| Clear cache | `hf cache delete` |
+| Check cache | `hf cache ls` |
+| Clear cache | `hf cache prune` |
 | Run on GPU | `hf jobs run --flavor a10g-small <image> <cmd>` |
 | Get environment info | `hf env` |

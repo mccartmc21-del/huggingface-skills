@@ -10,6 +10,7 @@ Complete reference for all `hf` CLI commands and options.
 - [Repository Files](#repository-files)
 - [Cache Management](#cache-management)
 - [Jobs](#jobs)
+- [Inference Endpoints](#inference-endpoints)
 - [Environment](#environment)
 
 ---
@@ -225,9 +226,107 @@ hf repo create my-gradio-space --repo-type space --space_sdk gradio  # Gradio sp
 | `--repo-type` | `model`, `dataset`, or `space` |
 | `--private` | Create as private repository |
 | `--space_sdk` | For spaces: `gradio`, `streamlit`, `docker`, `static` |
+| `--exist-ok` | Do not error if repo already exists |
+| `--resource-group-id` | Enterprise resource group (org-only) |
 | `--token` | Authentication token |
 
 **Note:** Use `--space_sdk` (with underscore), not `--space-sdk`.
+
+### hf repo delete
+Delete a repository.
+
+```bash
+hf repo delete my-username/my-model
+hf repo delete my-username/my-dataset --repo-type dataset
+```
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--repo-type` | `model`, `dataset`, or `space` |
+| `--missing-ok` | Do not error if repo does not exist |
+| `--token` | Authentication token |
+
+### hf repo move
+Move a repository between namespaces.
+
+```bash
+hf repo move old-namespace/my-model new-namespace/my-model
+```
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--repo-type` | `model`, `dataset`, or `space` |
+| `--token` | Authentication token |
+
+### hf repo settings
+Update repository settings.
+
+```bash
+hf repo settings my-username/my-model --private true
+hf repo settings my-username/my-model --gated auto
+```
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--gated` | `auto`, `manual`, or `false` |
+| `--private` | Set repo privacy |
+| `--repo-type` | `model`, `dataset`, or `space` |
+| `--token` | Authentication token |
+
+### hf repo list
+List repositories and print results as JSON.
+
+```bash
+hf repo list --repo-type model --limit 5
+hf repo list --repo-type dataset --search "text" --sort downloads
+hf repo list --repo-type space --author my-org --limit 20
+```
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--repo-type` | `model`, `dataset`, or `space` |
+| `--limit` | Maximum number of results (default: 10) |
+| `--filter` | Filter by tag (repeatable) |
+| `--search` | Search by name |
+| `--author` | Filter by author or org |
+| `--sort` | `created_at`, `downloads`, `last_modified`, `likes`, `trending_score` |
+| `--token` | Authentication token |
+
+**Note:** `--sort downloads` is not valid for spaces.
+
+### hf repo branch
+Manage repository branches.
+
+#### Create a branch
+```bash
+hf repo branch create <repo_id> <branch> [options]
+```
+
+```bash
+hf repo branch create Wauplin/my-cool-model release-v1
+hf repo branch create Wauplin/my-cool-model release-v1 --revision refs/pr/12
+```
+
+#### Delete a branch
+```bash
+hf repo branch delete <repo_id> <branch> [options]
+```
+
+```bash
+hf repo branch delete Wauplin/my-cool-model release-v1
+```
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--repo-type` | `model`, `dataset`, or `space` |
+| `--revision` | Base revision (create only) |
+| `--exist-ok` | Do not error if branch already exists (create only) |
+| `--token` | Authentication token |
 
 ### hf repo tag
 Manage repository tags.
@@ -241,6 +340,7 @@ hf repo tag create <repo_id> <tag> [options]
 hf repo tag create Wauplin/my-cool-model v1.0                  # Tag main branch
 hf repo tag create Wauplin/my-cool-model v1.0 --revision refs/pr/104  # Tag specific revision
 hf repo tag create bigcode/the-stack v1.0 --repo-type dataset  # Tag dataset
+hf repo tag create Wauplin/my-cool-model v1.0 -m "Release v1.0"
 ```
 
 #### List tags
@@ -267,6 +367,7 @@ hf repo tag delete Wauplin/my-cool-model v1.0 -y  # Skip confirmation
 | Option | Description |
 |--------|-------------|
 | `--repo-type` | `model`, `dataset`, or `space` |
+| `--message` | Tag description (create only) |
 | `--token` | Authentication token |
 | `-y` | Skip confirmation (for delete) |
 
@@ -313,39 +414,82 @@ hf repo-files delete Wauplin/my-dataset data/old.parquet --repo-type dataset
 
 ## Cache Management
 
-### hf cache scan
-Scan and display the contents of the local cache.
+### hf cache ls
+List cached repositories or revisions.
 
 ```bash
-hf cache scan                    # Show all cached repos
-hf cache scan --verbose          # Detailed output with file info
-hf cache scan --dir ~/.cache/huggingface/hub  # Custom cache directory
+hf cache ls                                 # List cached repos
+hf cache ls --revisions                     # Include revisions
+hf cache ls --filter "size>1GB" --limit 20  # Filter and limit
+hf cache ls --format json                   # JSON output
 ```
 
 **Options:**
 | Option | Description |
 |--------|-------------|
-| `--dir` | Cache directory to scan |
-| `-v, --verbose` | Show verbose output |
+| `--cache-dir` | Cache directory to scan |
+| `--revisions` | Include revisions instead of aggregated repos |
+| `--filter` | Filter expressions (repeatable) |
+| `--format` | `table`, `json`, or `csv` |
+| `--quiet` | Print only IDs (repo IDs or revision hashes) |
+| `--sort` | `accessed`, `modified`, `name`, or `size` (with `:asc`/`:desc`) |
+| `--limit` | Limit the number of results |
 
-**Output includes:** Repository IDs, revisions, sizes, and references (branches/tags).
-
-### hf cache delete
-Interactively delete revisions from the cache.
+### hf cache rm
+Remove cached repositories or revisions.
 
 ```bash
-hf cache delete                  # Interactive TUI mode
-hf cache delete --disable-tui    # Non-interactive mode
-hf cache delete --dir ./cache    # Custom cache directory
+hf cache rm model/gpt2           # Remove repo from cache
+hf cache rm <revision_hash>      # Remove a revision by hash
+hf cache rm model/gpt2 --dry-run # Preview deletions
+hf cache rm model/gpt2 --yes     # Skip confirmation
 ```
 
 **Options:**
 | Option | Description |
 |--------|-------------|
-| `--dir` | Cache directory |
-| `--disable-tui` | Disable Terminal User Interface |
+| `--cache-dir` | Cache directory to scan |
+| `-y, --yes` | Skip confirmation |
+| `--dry-run` | Preview deletions without removing files |
 
-**Note:** The TUI allows selecting specific revisions to delete. Use `--disable-tui` in scripts.
+### hf cache prune
+Remove detached (unreferenced) revisions from the cache.
+
+```bash
+hf cache prune                   # Prune detached revisions
+hf cache prune --dry-run         # Preview deletions
+hf cache prune --yes             # Skip confirmation
+```
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--cache-dir` | Cache directory to scan |
+| `-y, --yes` | Skip confirmation |
+| `--dry-run` | Preview deletions without removing files |
+
+### hf cache verify
+Verify checksums for a repo revision from cache or a local directory.
+
+```bash
+hf cache verify gpt2
+hf cache verify gpt2 --revision refs/pr/1
+hf cache verify karpathy/fineweb-edu-100b-shuffle --repo-type dataset
+hf cache verify deepseek-ai/DeepSeek-OCR --local-dir /path/to/repo
+```
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--repo-type` | `model`, `dataset`, or `space` |
+| `--revision` | Revision to verify |
+| `--cache-dir` | Cache directory to use |
+| `--local-dir` | Verify files from a local directory |
+| `--fail-on-missing-files` | Error if remote files are missing locally |
+| `--fail-on-extra-files` | Error if local files are absent remotely |
+| `--token` | Authentication token |
+
+**Note:** Use either `--cache-dir` or `--local-dir`, not both.
 
 ---
 
@@ -462,6 +606,156 @@ hf jobs scheduled delete <id>     # Delete a schedule
 **Scheduled UV scripts:**
 ```bash
 hf jobs scheduled uv run @hourly my_script.py
+```
+
+---
+
+## Inference Endpoints
+
+Manage Hugging Face Inference Endpoints.
+
+### hf endpoints ls
+List endpoints in a namespace.
+
+```bash
+hf endpoints ls
+hf endpoints ls --namespace my-org
+```
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--namespace` | Namespace to list (defaults to current user) |
+| `--token` | Authentication token |
+
+### hf endpoints deploy
+Deploy an endpoint from a Hub model.
+
+```bash
+hf endpoints deploy my-endpoint \
+  --repo openai/gpt-oss-120b \
+  --framework vllm \
+  --accelerator gpu \
+  --instance-size x4 \
+  --instance-type nvidia-a10g \
+  --region us-east-1 \
+  --vendor aws
+```
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--repo` | Model repo to deploy |
+| `--framework` | Serving framework (e.g., `vllm`) |
+| `--accelerator` | Accelerator type (e.g., `cpu`, `gpu`) |
+| `--instance-size` | Instance size (e.g., `x4`) |
+| `--instance-type` | Instance type (e.g., `intel-icl`) |
+| `--region` | Cloud region |
+| `--vendor` | Cloud vendor (e.g., `aws`) |
+| `--namespace` | Namespace for the endpoint |
+| `--task` | Task (e.g., `text-generation`) |
+| `--min-replica` | Minimum replicas |
+| `--max-replica` | Maximum replicas |
+| `--scale-to-zero-timeout` | Minutes before scaling to zero |
+| `--scaling-metric` | Scaling metric |
+| `--scaling-threshold` | Scaling threshold |
+| `--token` | Authentication token |
+
+### hf endpoints catalog ls
+List catalog models.
+
+```bash
+hf endpoints catalog ls
+```
+
+### hf endpoints catalog deploy
+Deploy an endpoint from the catalog.
+
+```bash
+hf endpoints catalog deploy --repo openai/gpt-oss-120b --name my-endpoint
+```
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--repo` | Catalog model repo |
+| `--name` | Endpoint name (optional) |
+| `--namespace` | Namespace for the endpoint |
+| `--token` | Authentication token |
+
+### hf endpoints describe
+Get endpoint details.
+
+```bash
+hf endpoints describe my-endpoint
+```
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--namespace` | Endpoint namespace |
+| `--token` | Authentication token |
+
+### hf endpoints update
+Update endpoint settings.
+
+```bash
+hf endpoints update my-endpoint --min-replica 1 --max-replica 2
+hf endpoints update my-endpoint --repo openai/gpt-oss-120b --revision refs/pr/12
+```
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--repo` | Model repo |
+| `--revision` | Model revision |
+| `--framework` | Serving framework |
+| `--accelerator` | Accelerator type |
+| `--instance-size` | Instance size |
+| `--instance-type` | Instance type |
+| `--task` | Task |
+| `--min-replica` | Minimum replicas |
+| `--max-replica` | Maximum replicas |
+| `--scale-to-zero-timeout` | Minutes before scaling to zero |
+| `--scaling-metric` | Scaling metric |
+| `--scaling-threshold` | Scaling threshold |
+| `--namespace` | Endpoint namespace |
+| `--token` | Authentication token |
+
+### hf endpoints delete
+Delete an endpoint permanently.
+
+```bash
+hf endpoints delete my-endpoint --yes
+```
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--yes` | Skip confirmation prompt |
+| `--namespace` | Endpoint namespace |
+| `--token` | Authentication token |
+
+### hf endpoints pause
+Pause an endpoint.
+
+```bash
+hf endpoints pause my-endpoint
+```
+
+### hf endpoints resume
+Resume an endpoint.
+
+```bash
+hf endpoints resume my-endpoint
+hf endpoints resume my-endpoint --fail-if-already-running
+```
+
+### hf endpoints scale-to-zero
+Scale an endpoint to zero.
+
+```bash
+hf endpoints scale-to-zero my-endpoint
 ```
 
 ---
