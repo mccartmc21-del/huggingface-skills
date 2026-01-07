@@ -19,7 +19,7 @@
       "description": "Publish and manage research papers on Hugging Face Hub. Supports creating paper pages, linking papers to models/datasets, claiming authorship, and generating professional markdown-based research articles."
     },
     {
-      "name": "hugging-face-dataset-creator",
+      "name": "hugging-face-datasets",
       "source": "./hf-datasets",
       "description": "Create and manage datasets on Hugging Face Hub. Supports initializing repos, defining configs/system prompts, and streaming row updates. Designed to work alongside HF MCP server for comprehensive dataset workflows."
     },

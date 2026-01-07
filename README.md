@@ -71,7 +71,7 @@ This repository contains a few skills to get you started. You can also contribut
 
 | Skill Folder            | Description                                                                                                                | Documentation                                          |
 |-------------------------|----------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------|
-| `hf-datasets/`   | Prompts, templates, and scripts for creating structured training datasets. | [SKILL.md](hf-datasets/skills/hugging-face-dataset-creator/SKILL.md) |
+| `hf-datasets/`   | Prompts, templates, and scripts for creating structured training datasets. | [SKILL.md](hf-datasets/skills/hugging-face-datasets/SKILL.md) |
 | `hf-evaluation/`  | Instructions plus utilities for orchestrating evaluation jobs, generating reports, and mapping metrics. | [SKILL.md](hf-evaluation/skills/hugging-face-evaluation-manager/SKILL.md) |
 | `hf-llm-trainer/`       | Comprehensive training skill with `SKILL.md` guidance, helper scripts (e.g., `train_sft_example.py`, `convert_to_gguf.py`, cost estimators). | [SKILL.md](hf-llm-trainer/skills/model-trainer/SKILL.md) |
 | `hf-papers/`   | Tools for publishing and managing research papers on Hugging Face Hub. Index papers from arXiv, link papers to models/datasets, generate professional research articles from templates, and manage paper authorship. | [SKILL.md](hf-papers/skills/hugging-face-paper-publisher/SKILL.md) |
